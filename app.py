@@ -1,43 +1,20 @@
-from transformers import AutoModelForSequenceClassification
-from transformers import TFAutoModelForSequenceClassification
-from transformers import AutoTokenizer, AutoConfig
-import numpy as np
-from scipy.special import softmax
-# Preprocess text (username and link placeholders)
-# def preprocess(text):
-#     new_text = []
-#     for t in text.split(" "):
-#         t = '@user' if t.startswith('@') and len(t) > 1 else t
-#         t = 'http' if t.startswith('http') else t
-#         new_text.append(t)
-#     return " ".join(new_text)
-MODEL = f"Model/twitter-roberta-base-sentiment-2022"
-tokenizer = AutoTokenizer.from_pretrained(MODEL)
-config = AutoConfig.from_pretrained(MODEL)
-# PT
-model = AutoModelForSequenceClassification.from_pretrained(MODEL)
-#model.save_pretrained(MODEL)
-text = "the event went without a hitch and it was very well planned. Staff was helpful with all my issues."
-# text = preprocess(text)
-encoded_input = tokenizer(text, return_tensors='pt')
-output = model(**encoded_input)
-scores = output[0][0].detach().numpy()
-scores = softmax(scores)
-# # TF
-# model = TFAutoModelForSequenceClassification.from_pretrained(MODEL)
-# model.save_pretrained(MODEL)
-# text = "Covid cases are increasing fast!"
-# encoded_input = tokenizer(text, return_tensors='tf')
-# output = model(encoded_input)
-# scores = output[0][0].numpy()
-# scores = softmax(scores)
-# Print labels and scores
-ranking = np.argsort(scores)
-ranking = ranking[::-1]
+from flask import request
+from flask import Flask, render_template
+from pyScripts.SentimentFunctions import stringSentement
 
-print(scores)
-print(text)
-for i in range(scores.shape[0]):
-    l = config.id2label[ranking[i]]
-    s = scores[ranking[i]]
-    print(f"{i+1}) {l} {np.round(float(s), 4)}")
+app = Flask(__name__)
+
+
+@app.route('/', methods=['POST','GET'])
+def my_form_post():
+
+    if request.method == 'POST':
+        text = request.form['text']
+        results = stringSentement(text)
+        return render_template('index.html', variable=results)
+    else:
+        return render_template('index.html')
+
+
+if __name__ == "__main__":
+    app.run(port='8088', threaded=False, debug=True)
