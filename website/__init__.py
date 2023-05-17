@@ -17,11 +17,11 @@ def create_app():
     #         return render_template('index.html', variable=results)
     #     else:
     #         return render_template('index.html')
-    
+
     @app.route("/", methods=['POST','GET'])
     def index():
         # return 'testing route'
-        return render_template('index.html')
+        return render_template('home.html')
     
     @app.route("/results")
     def results():

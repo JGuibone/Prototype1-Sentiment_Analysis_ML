@@ -1,0 +1,23 @@
+{% extends "index.html" %} {% block title%}Main Page{% endblock %}
+
+{% block content %}
+    <div class="centered">
+      <div class="text-center text-white">
+        <title>Sentiment Analysis Tool</title>
+      </div>
+      <h1 class="header">Sentiment Analysis Tool</h1>
+
+      <p class="desc">
+        Upload a csv file containing the sentiments, click on submit button and wait for the prediction.
+      </p>
+
+      <form method="POST" enctype="multipart/form-data" onSubmit="return validate();" class="form">
+        <div class="form-div">
+          <input type="file" name="file" class="form-control mr-2" />
+          <button type="submit" class="btn btn-outline-primary" onclick="analyze()">
+            Analyze
+          </button>
+        </div>
+      </form>
+    </div>
+{% endblock %}
