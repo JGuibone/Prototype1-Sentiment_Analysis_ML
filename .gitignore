@@ -1,4 +1,8 @@
 .venv/
 Model/
+
+
+
 *.pyc
 *.pyo
+*.zip
