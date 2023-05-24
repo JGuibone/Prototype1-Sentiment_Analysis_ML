@@ -13,11 +13,21 @@
 
       <form method="POST" enctype="multipart/form-data" onSubmit="return validate();" class="form">
         <div class="form-div">
-          <input type="file" name="file" class="form-control mr-2" />
+          <input type="file" name="file" class="form-control mr-2" accept=".txt, .pdf, .png, .jpg, .jpeg, .gif, .doc, .docx, .ppt, .pptx, .mp3, .mkv, .mp4" multiple/>
           <button type="submit" class="btn btn-outline-primary" onclick="analyze()">
             Analyze
           </button>
         </div>
       </form>
     </div>
+
+    <form action="/uploader" method="post" enctype="multipart/form-data" >
+      <div class="drop-area">
+          <span class="drop-area__prompt">Drop file here or Click to upload.</span>
+          <input type="file" name="file" class="drop-area__input" accept=".txt, .pdf, .png, .jpg, .jpeg, .gif, .doc, .docx, .ppt, .pptx, .mp3, .mkv, .mp4" multiple>
+      </div>
+      <div>
+          <input type="submit" value="Upload" />
+      </div>
+  </form>
 {% endblock %}
