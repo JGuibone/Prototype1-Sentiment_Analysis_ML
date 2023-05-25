@@ -16,17 +16,6 @@ def create_app():
     def allowed_file(filename):
         return filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
-    # @app.route('/', methods=['POST','GET'])
-    # def my_form_post():
-
-    #     if request.method == 'POST':
-    #         text = request.form['text']
-    #         results = stringSentement(text)
-    #         return render_template('index.html', variable=results)
-    #     else:
-    #         return render_template('index.html')
-
     @app.route("/", methods=['GET'])
     def index():
         # return 'testing route'
@@ -41,8 +30,8 @@ def create_app():
                 if 'file' not in request.files or file.filename == '':
                     continue
                 if allowed_file(file.filename) == True:
-                    table = document2Array(file)
-                    print(sentimentV2(table))
+                    table = sentimentV2(document2Array(file))
+                    print(table)
 
         return render_template('results.html')
 
