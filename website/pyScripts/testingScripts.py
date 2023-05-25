@@ -2,6 +2,7 @@ from transformers import AutoModelForSequenceClassification
 from transformers import TFAutoModelForSequenceClassification
 from transformers import AutoTokenizer, AutoConfig
 import numpy as np
+import pandas as pd
 from scipy.special import softmax
 from pathlib import Path
 # from transformers import logging as hf_logging
@@ -14,19 +15,17 @@ model = AutoModelForSequenceClassification.from_pretrained(MODEL)
 
 
 def stringSentement(text):
-    resultScore = []
     encoded_input = tokenizer(text, return_tensors='pt')
     output = model(**encoded_input)
-    scores = output[0][0].detach().numpy()
-    scores = softmax(scores)
-    ranking = np.argsort(scores)
-    ranking = ranking[::-1]
-    print(text)
-    for i in range(scores.shape[0]):
-        l = config.id2label[ranking[i]]
-        s = scores[ranking[i]]
-        resultScore.append(f"{i + 1}) {l} {np.round(float(s), 4)}")
-    return resultScore
+    # scores = output[0][0].detach().numpy()
+    scores = softmax(output[0][0].detach().numpy())
+    ranking = scores.argsort()[::-1]
+    # ranking = np.argsort(scores)
+    # ranking = ranking[::-1]
+    l = config.id2label[ranking[0]]
+    s = scores[ranking[0]]
+    result = f"{l} {np.round(float(s), 4)}"
+    return result
 
 def documentInjest():
 
@@ -35,43 +34,39 @@ def documentInjest():
 import csv
 import numpy as np
 
-def generate_numpy_table(csv_file):
+def document2Array(csv_file):
     with open(csv_file, 'r', encoding='utf-8-sig') as file:
         csv_reader = csv.reader(file)
         data = list(csv_reader)
     table = np.array(data)
-    return table
+    return table[:,1:]
 
-# Usage example
+
 csv_file_path = 'website/testData/testData.csv'
-numpy_table = generate_numpy_table(csv_file_path)
-print(numpy_table)
 
-def sameContentChecker(csv_file):
+pdtable = pd.read_csv(csv_file_path)
+numpyarray = pdtable.to_numpy()
+numpyarray = numpyarray[:,1:]
+# print(numpyarray[:,1:])
+
+def combineArray(numpyArray):
 
     return True
+def sentimentV2(numpyArray):
+    pylist = numpyarray.tolist()
+    for x in range(numpyArray.shape[0]):
+        result = stringSentement(numpyArray[x][0])
+        pylist[x].append(result)
+    nparr = np.array(pylist)
+    return nparr
+
+# print(numpyarray[1])
+print(sentimentV2(numpyarray))
 
 
-import numpy as np
+# stringSentement('we need aircon to hot and wifi')
+# print(stringSentement('the event was a huge failure'))
 
-def check_and_remove_same_content(table):
-    # Convert the table elements to strings (if not already)
-    str_table = np.char.asarray(table)
-
-    # Check if all elements are equal to the first element
-    same_content = np.all(np.char.equal(str_table, str_table[0]))
-
-    # Remove duplicates
-    unique_table = np.unique(str_table)
-
-    return same_content, unique_table
-
-# Usage example
-table = np.array([['apple', 'apple', 'apple'],
-                  ['apple', 'apple', 'apple'],
-                  ['apple', 'apple', 'apple']])
-
-same_content, unique_table = check_and_remove_same_content(table)
-print("Same content:", same_content)  # Output: True
-print("Unique table:")
-print(unique_table)
+# nparray = np.array([1,3,2])
+# ranking = (-nparray).argsort()
+# print(ranking)
