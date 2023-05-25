@@ -1,7 +1,8 @@
 from flask import request
 from flask import Flask, render_template
-from website.pyScripts.SentimentFunctions import stringSentement
+from website.pyScripts.SentimentFunctions import stringSentement, document2Array, sentimentV2
 from pathlib import Path
+import numpy as np
 
 
 def create_app():
@@ -15,25 +16,23 @@ def create_app():
     def allowed_file(filename):
         return filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
-    # @app.route('/', methods=['POST','GET'])
-    # def my_form_post():
-
-    #     if request.method == 'POST':
-    #         text = request.form['text']
-    #         results = stringSentement(text)
-    #         return render_template('index.html', variable=results)
-    #     else:
-    #         return render_template('index.html')
-
     @app.route("/", methods=['GET'])
     def index():
         # return 'testing route'
         return render_template('home.html')
     
-    @app.route("/results")
+    @app.route("/results", methods=['POST'])
     def results():
         # return 'testing route'
+        if request.method == 'POST':
+            files = request.files.getlist('file')
+            for file in files:
+                if 'file' not in request.files or file.filename == '':
+                    continue
+                if allowed_file(file.filename) == True:
+                    table = sentimentV2(document2Array(file))
+                    print(table)
+
         return render_template('results.html')
 
     @app.route("/test")
