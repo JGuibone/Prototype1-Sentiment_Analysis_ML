@@ -61,7 +61,7 @@ def sentimentV2(numpyArray):
     return nparr
 
 # print(numpyarray[1])
-print(sentimentV2(numpyarray))
+# print(sentimentV2(numpyarray))
 
 
 # stringSentement('we need aircon to hot and wifi')
