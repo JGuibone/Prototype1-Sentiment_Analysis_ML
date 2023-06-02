@@ -1,6 +1,6 @@
 from flask import request
 from flask import Flask, render_template
-from website.pyScripts.SentimentFunctions import stringSentement, document2Array, sentimentV2
+from website.pyScripts.CoreFunctions import stringSentement, document2Array, sentimentV2
 from pathlib import Path
 import numpy as np
 

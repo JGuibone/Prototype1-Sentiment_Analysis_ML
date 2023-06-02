@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from scipy.special import softmax
 from pathlib import Path
+import csv as csv
 # from transformers import logging as hf_logging
 
 MODEL = f"Model/twitter-roberta-base-sentiment-2022"
@@ -44,10 +45,10 @@ def document2Array(csv_file):
 
 csv_file_path = 'website/testData/testData.csv'
 
-pdtable = pd.read_csv(csv_file_path)
-numpyarray = pdtable.to_numpy()
-numpyarray = numpyarray[:,1:]
-# print(numpyarray[:,1:])
+# pdtable = pd.read_csv(csv_file_path)
+# numpyarray = pdtable.to_numpy()
+# numpyarray = numpyarray[:,1:]
+# # print(numpyarray[:,1:])
 
 def combineArray(numpyArray):
 
@@ -60,6 +61,33 @@ def sentimentV2(numpyArray):
     nparr = np.array(pylist)
     return nparr
 
+# print(pdtable.columns)
+# pdtable.columns = ['column1','column2','column3']
+# print(pdtable.columns)
+
+def CSVToStr(csv_file):
+    #Function is used for injesting form POST from user.
+    pdtable = pd.read_csv(csv_file)
+    pddata = pdtable.iloc[:,1]
+    convo = '\n'.join(list(pddata))
+    print(convo)
+
+
+
+def document2Array(csv_file):
+    #remove header parementer if you dont want to include the header of the csv document in converting to numpy array
+    pdtable = pd.read_csv(csv_file)
+    nptable = pdtable.to_numpy()[:,1]
+    return nptable
+
+# testingfunction()
+
+CSVToStr(csv_file_path)
+
+# print(len('birds'))
+
+# print(pdtable.shape)
+# print(pdtable.iloc[:[0]])
 # print(numpyarray[1])
 # print(sentimentV2(numpyarray))
 

@@ -1,22 +1,32 @@
 from transformers import pipeline
-summarizer = pipeline("summarization", model="philschmid/bart-large-cnn-samsum")
+import pandas as pd
 
-conversation = '''In terms of handling the events with time management, that's what's lacking. It'll be better if they utilize every available room to manage the times set of each events. \n 
-Need to improve on planning the event. \n 
-more e-sports. \n 
-for me more esport events and more speakers. \n 
-improve and give internet signal for all students \n 
-more esports event and upgrade the computers. \n 
-i think the place because its very small and i suggest that outsider let them go inside and partake the event. \n 
-i would suggest that there are dota2 on the next e-sports event. \n 
-organize and prioritize those important events. \n 
-Next time more cooperate from students and faculty. \n 
-good connection and good venue. \n 
-venue. \n 
-maintaining facilitate and cooperation, teamwork of students. \n                              
-'''
+csv_file_path = 'website/testData/Survey Questions - Techono Event.csv'
 
-result = summarizer(conversation)
+pdtable = pd.read_csv(csv_file_path)
 
-print(type(result[0]))
-print(result[0]['summary_text'])
+def csvPrep(csv_file, column_num):
+    # No Error Checking.
+    pdtable = pd.read_csv(csv_file)
+    pd_data = pdtable.iloc[:,column_num]
+    return pd_data
+
+def pandasToSummarize(pd_series):
+    #uses HuggingFace Transformers pipeline Library, No Error Checking.
+    summarizer = pipeline("summarization", model="Model/bart-large-cnn-samsum")
+    convo = '\n'.join(list(pd_series))
+    return summarizer(convo)[0]['summary_text']
+    
+
+def pandasToSentiment(pd_series):
+    nptable = pd_series.to_numpy()
+    print(nptable)
+    print(type(nptable))
+
+pandasToSentiment(csvPrep(csv_file_path,2))
+
+
+# result = summarizer(CSVToStr(csv_file_path))
+# print(type(result))
+# print(result[0]['summary_text'])
+# print(CSVToStr(csv_file_path))

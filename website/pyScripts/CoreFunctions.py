@@ -5,6 +5,7 @@ import numpy as np
 from scipy.special import softmax
 import csv
 import pandas as pd
+from transformers import pipeline
 
 MODEL = f"Model/twitter-roberta-base-sentiment-2022"
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
@@ -34,3 +35,18 @@ def sentimentV2(numpyArray):
         pylist[x].append(result)
     nparr = np.array(pylist)
     return nparr
+
+#output
+
+# nparr = [[string,string,string],
+        # [string,string,string],
+        # [string,string,string],
+        # [string,string,string]]
+
+
+#================================= TESTING Remove any un-commented code below this line when done ========================================
+
+# csv_file_path = 'website/testData/testData.csv'
+
+# pdtable = pd.read_csv(csv_file_path)
+
