@@ -1,8 +1,7 @@
-from flask import request
-from flask import Flask, render_template
-from website.pyScripts.CoreFunctions import stringSentement, document2Array, sentimentV2
+from flask import Flask, render_template, request, make_response
+from website.pyScripts.CoreFunctions import csvPrep, pandasToSummarize, pandasToSentiment
 from pathlib import Path
-import numpy as np
+import pdfkit
 
 
 def create_app():
@@ -23,20 +22,39 @@ def create_app():
     
     @app.route("/results", methods=['POST'])
     def results():
-        # return 'testing route'
         if request.method == 'POST':
             files = request.files.getlist('file')
+            MainDict = dict.fromkeys(['Sentiment', 'Summary'])
             for file in files:
                 if 'file' not in request.files or file.filename == '':
                     continue
                 if allowed_file(file.filename) == True:
-                    table = sentimentV2(document2Array(file))
-                    print(table)
+                    currentFile = csvPrep(file,2)
+                    MainDict['Sentiment'] = pandasToSentiment(currentFile)
+                    MainDict['Summary'] = pandasToSummarize(currentFile)
+                    # print(summaryval)
+                    # print(f"{sentiment} \n {summaryval}")
+                    # print(type(summaryval))
+            # print(MainDict['Sentiment'])
 
+        else:
+            return 404
         return render_template('results.html')
 
     @app.route("/test")
     def testroute():
-        return 'testroute'
+        config = pdfkit.configuration(wkhtmltopdf = f'wkhtmltox/bin/wkhtmltopdf.exe')
+        rendered = render_template('test.html', value1='Hello', value2='Word')
+        pdf = pdfkit.from_string(rendered, False, configuration=config)
+        
+        
+
+        response = make_response(pdf)
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = 'inline;filename=output.pdf'
+
+        return response
+        # pdfkit.from_url('http://google.com', 'out.pdf')
+        # return 1
 
     return app
