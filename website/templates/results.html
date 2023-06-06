@@ -2,9 +2,13 @@
 
 {% block content %}
 
-Hello this is search result page <br>
+{% if data %}
+<h1>Data is present [TESTING]</h1>
+<p>{{data['Summary']}}</p><br>
+{% for table in tables %}
+            {{titles[loop.index]}}
+            {{ table|safe }}
+{% endfor %}
+{% endif%}
 
-<h1> this is just a testing. </h1>
-<!-- <form> -->
-<!-- </form> -->
 {% endblock %}

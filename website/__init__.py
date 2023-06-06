@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, make_response
-from website.pyScripts.CoreFunctions import csvPrep, pandasToSummarize, pandasToSentiment
+from website.pyScripts.CoreFunctions import csvPrep, pandasToSummarize, pandasToSentiment, generatePDF
 from pathlib import Path
 import pdfkit
 
@@ -36,10 +36,10 @@ def create_app():
                     # print(f"{sentiment} \n {summaryval}")
                     # print(type(summaryval))
             # print(MainDict['Sentiment'])
+            return generatePDF(MainDict)
 
         else:
             return 404
-        return render_template('results.html')
 
     @app.route("/test")
     def testroute():
@@ -56,5 +56,10 @@ def create_app():
         return response
         # pdfkit.from_url('http://google.com', 'out.pdf')
         # return 1
+
+    @app.route("/test2", methods=['GET'])
+    def testroute2():
+
+        return 'Hello World'
 
     return app

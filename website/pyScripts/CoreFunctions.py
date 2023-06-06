@@ -1,5 +1,7 @@
 import pandas as pd
 from transformers import pipeline
+import pdfkit
+from flask import render_template, make_response
 
 
 #output
@@ -42,3 +44,15 @@ def pandasToSentiment(pd_series):
     sentiment['Label'] = pd.Series(Label)
     sentiment['Score'] = pd.Series(Score)
     return sentiment
+
+
+def generatePDF(Data: dict):
+    config = pdfkit.configuration(wkhtmltopdf = f'wkhtmltox/bin/wkhtmltopdf.exe')
+    rendered = render_template('results.html', data=Data, tables=[Data['Sentiment'].to_html(classes='data')], titles=Data['Sentiment'].columns.values)
+    pdf = pdfkit.from_string(rendered, False, configuration=config)
+    
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline;filename=output.pdf'
+
+    return response
