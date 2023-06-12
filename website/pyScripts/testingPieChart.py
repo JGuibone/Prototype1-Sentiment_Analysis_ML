@@ -6,18 +6,21 @@ import pandas as pd
 
 csv_file_path = 'website/testData/Survey Questions - Techono Event.csv'
 
-pdtable = pd.read_csv(csv_file_path)
-
-def csvPrep(csv_file, column_num):
+def csvPrep(csv_file):
     # No Error Checking.
     pdtable = pd.read_csv(csv_file)
-    pd_data = pdtable.iloc[:,column_num]
+    pdtable.shift()[1:]
+    # pdtable.rename(columns={})
+    pd_data = pdtable.iloc[:, 1:]
     return pd_data
 
-def pandasToSentimentV2(pd_series):
+def columnSelector(Dataframe: pd.DataFrame, columnNumber):
+    return Dataframe.iloc[:, columnNumber]
+
+def SentimentTwitterBase(pd_series):
     #returns a pandas dataframe from processing the sentiment
     sentiment = pd.DataFrame(columns=['Sentence','Label','Score'])
-    sentiment_task = pipeline("text-classification", model=f"Model/twitter-roberta-base-sentiment-2022", tokenizer=f"Model/twitter-roberta-base-sentiment-2022")
+    sentiment_task = pipeline("sentiment-analysis", model=f"Model/twitter-roberta-base-sentiment-2022", tokenizer=f"Model/twitter-roberta-base-sentiment-2022")
     Sentence = []
     Label = []
     Score = []
@@ -26,13 +29,12 @@ def pandasToSentimentV2(pd_series):
         Sentence.append(item)
         Label.append(f"{sentimentResult[0]['label']}")
         Score.append(f"{format(sentimentResult[0]['score'], '.4f')}")
-    sentiment['Sentence'] = pd.Series(Sentence, dtype=str)
-    sentiment['Label'] = pd.Series(Label, dtype=str)
-    sentiment['Score'] = pd.Series(Score, dtype=float)
+    sentiment['Sentence'] = pd.Series(Sentence)
+    sentiment['Label'] = pd.Series(Label)
+    sentiment['Score'] = pd.Series(Score)
     return sentiment
 
-
-def pandasToSentiment(pd_series):
+def SentimentGPT2(pd_series):
     #returns a pandas dataframe from processing the sentiment
     sentiment = pd.DataFrame(columns=['Sentence','Label','Score'])
     sentiment_task = pipeline("text-classification", model=f"Model/gpt2-medium-finetuned-sst2-sentiment", tokenizer=f"Model/gpt2-medium-finetuned-sst2-sentiment")
@@ -42,48 +44,67 @@ def pandasToSentiment(pd_series):
     for item in pd_series:
         sentimentResult = sentiment_task(item)
         Sentence.append(item)
-        Label.append(f"{sentimentResult[0]['label']}")
+        Label.append(f"{sentimentResult[0]['label'].lower()}")
         Score.append(f"{format(sentimentResult[0]['score'], '.4f')}")
     sentiment['Sentence'] = pd.Series(Sentence, dtype=str)
     sentiment['Label'] = pd.Series(Label, dtype=str)
     sentiment['Score'] = pd.Series(Score, dtype=float)
     return sentiment
 
-def processDataForPieV2(data: pd.Series):
-    Possitive = 0
-    Negative = 0
-    Neutral = 0
-    for label in data:
-        if label == 'positive' or label ==  'POSITIVE':
-            Possitive += 1
-        elif label == 'neutral' or label ==  'NEUTRAL':
-            Neutral += 1
-        else:
-            Negative +=1
-    pieVal = {'Positive': Possitive, 'Neutral': Neutral, 'Negative': Negative}
-    return pieVal
 
-def processDataForPie(data: pd.Series):
-    Possitive = 0
-    Negative = 0
-    for label in data:
-        if label == 'positive' or label ==  'POSITIVE':
-            Possitive += 1
-        else:
-            Negative +=1
-    pieVal = {'Positive': Possitive, 'Negative': Negative}
-    return pieVal
+def DataToPie(Data :pd.Series):
+    numColumn = Data.nunique()
+    if numColumn == 3:
+        Positive = 0
+        Neutral = 0
+        Negative = 0
+        for item in Data:
+            if str(item).lower() == 'positive':
+                Positive += 1
+            elif str(item).lower() == 'neutral':
+                Neutral += 1
+            else:
+                Negative += 1
+        return {'Positive': Positive, 'Neutral': Neutral, 'Negative': Negative}
+    else:
+        Positive = 0
+        Negative = 0
+        for item in Data:
+            if str(item).lower() == 'positive':
+                Positive += 1
+            else:
+                Negative += 1
+        return {'Positive': Positive, 'Negative': Negative}
 
-LabVal = pandasToSentiment(csvPrep(csv_file_path,1))['Label']
-LabVal2 = pandasToSentimentV2(csvPrep(csv_file_path,1))['Label']
-print(LabVal)
-print(LabVal2)
+def GeneratePie(Data :dict):
+    numElem = len(Data)
+    if numElem == 3:
+        x = list(Data.values())
+        labels = list(Data.keys())
+        fig, ax = plt.subplots(figsize=(6, 6))
+        ax.pie(x, labels=labels, autopct='%.1f%%')
+        ax.set_title('Sentiment Base on Feedback \n Using Twitter roberta base')
+        plt.tight_layout()
+        plt.savefig('website/PieChartImgs/SentimentTwitter.png')
+        return True
+    else:
+        x = list(Data.values())
+        labels = list(Data.keys())
+        fig, ax = plt.subplots(figsize=(6, 6))
+        ax.pie(x, labels=labels, autopct='%.1f%%')
+        ax.set_title('Sentiment Base on Feedback \n Using GPT-2 Model')
+        plt.tight_layout()
+        plt.savefig('website/PieChartImgs/SentimentGPT2.png')
+        return True
 
+data = columnSelector(csvPrep(csv_file_path),0)
+TwitterModel = SentimentTwitterBase(data)['Label']
+GPT2Model = SentimentGPT2(data)['Label']
+GeneratePie(DataToPie(TwitterModel))
+GeneratePie(DataToPie(GPT2Model))
+# print(GeneratePie(DataToPie(Labels)))
 
-print(processDataForPie(LabVal))
-print(processDataForPieV2(LabVal2))
-
-# x = list(piedata.values())
+# x = list(piea.values())
 # labels = list(piedata.keys())
 
 # fig, ax = plt.subplots(figsize=(6, 6))

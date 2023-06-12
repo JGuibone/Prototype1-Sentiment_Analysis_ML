@@ -1,7 +1,9 @@
 import pandas as pd
-from transformers import pipeline
+import matplotlib.pyplot as plt
 import pdfkit
+from transformers import pipeline
 from flask import render_template, make_response
+
 
 def csvPrep(csv_file):
     # No Error Checking.
@@ -20,10 +22,6 @@ def pandasToSummarize(pd_series):
     convo = '\n'.join(list(pd_series))
     result = summarizer(convo)[0]['summary_text']
     return result
-    
-#================================= TESTING Remove any un-commented code below this line when done ========================================
-
-
 
 def SentimentTwitterBase(pd_series):
     #returns a pandas dataframe from processing the sentiment
@@ -59,6 +57,29 @@ def SentimentGPT2(pd_series):
     sentiment['Score'] = pd.Series(Score, dtype=float)
     return sentiment
 
+def DataToPie(Data :pd.Series):
+    numColumn = Data.nunique()
+    if numColumn == 3:
+        Positive = 0
+        Neutral = 0
+        Negative = 0
+        for item in Data:
+            if str(item).lower() == 'positive':
+                Positive += 1
+            elif str(item).lower() == 'neutral':
+                Neutral += 1
+            else:
+                Negative += 1
+        return {'Positive': Positive, 'Neutral': Neutral, 'Negative': Negative}
+    else:
+        Positive = 0
+        Negative = 0
+        for item in Data:
+            if str(item).lower() == 'positive':
+                Positive += 1
+            else:
+                Negative += 1
+        return {'Positive': Positive, 'Negative': Negative}
 
 def generatePDF(Data: dict):
     config = pdfkit.configuration(wkhtmltopdf = f'wkhtmltox/bin/wkhtmltopdf.exe')
@@ -77,3 +98,49 @@ def generatePDF(Data: dict):
     response.headers['Content-Disposition'] = 'inline;filename=output.pdf'
 
     return response
+
+def DataToPie(Data :pd.Series):
+    numColumn = Data.nunique()
+    if numColumn == 3:
+        Positive = 0
+        Neutral = 0
+        Negative = 0
+        for item in Data:
+            if str(item).lower() == 'positive':
+                Positive += 1
+            elif str(item).lower() == 'neutral':
+                Neutral += 1
+            else:
+                Negative += 1
+        return {'Positive': Positive, 'Neutral': Neutral, 'Negative': Negative}
+    else:
+        Positive = 0
+        Negative = 0
+        for item in Data:
+            if str(item).lower() == 'positive':
+                Positive += 1
+            else:
+                Negative += 1
+        return {'Positive': Positive, 'Negative': Negative}
+
+def GeneratePie(Data :dict):
+    numElem = len(Data)
+    if numElem == 3:
+        x = list(Data.values())
+        labels = list(Data.keys())
+        fig, ax = plt.subplots(figsize=(6, 6))
+        ax.pie(x, labels=labels, autopct='%.1f%%')
+        ax.set_title('Sentiment Base on Feedback \n Using Twitter roberta base')
+        plt.tight_layout()
+        plt.savefig('website/PieChartImgs/SentimentTwitter.png')
+    else:
+        x = list(Data.values())
+        labels = list(Data.keys())
+        fig, ax = plt.subplots(figsize=(6, 6))
+        ax.pie(x, labels=labels, autopct='%.1f%%')
+        ax.set_title('Sentiment Base on Feedback \n Using GPT-2 Model')
+        plt.tight_layout()
+        plt.savefig('website/PieChartImgs/SentimentGPT2.png')
+
+
+#================================= TESTING Remove any un-commented code below this line when done ========================================

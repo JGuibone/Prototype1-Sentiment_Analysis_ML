@@ -5,6 +5,10 @@
 {% if data %}
 <h1>Data is present [TESTING]</h1>
 <p>{{data['Summary']}}</p><br>
+
+<img src="website/PieChartImgs/SentimentTwitter.png" alt="" srcset="">
+<img src="website/PieChartImgs/SentimentGPT2.png" alt="" srcset="">
+
 {% for table in SentimentTwitterTable %}
             {{SentimentTwitterTitle[loop.index]}}
             {{ table|safe }}

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, make_response
-from website.pyScripts.CoreFunctions import csvPrep, pandasToSummarize, SentimentTwitterBase, SentimentGPT2, generatePDF, columnSelector
+from website.pyScripts.CoreFunctions import *
 from pathlib import Path
 import pdfkit
 
@@ -35,10 +35,8 @@ def create_app():
                     MainDict['Sentiment-TwitterModel'] = SentimentTwitterBase(Sentiment)
                     MainDict['Sentiment-GPT2'] = SentimentGPT2(Sentiment)
                     MainDict['Summary'] = pandasToSummarize(Summary)
-                    # print(summaryval)
-                    # print(f"{sentiment} \n {summaryval}")
-                    # print(type(summaryval))
-            # print(MainDict['Sentiment'])
+                    GeneratePie(DataToPie(MainDict['Sentiment-TwitterModel']['Label']))
+                    GeneratePie(DataToPie(MainDict['Sentiment-GPT2']['Label']))
             return generatePDF(MainDict)
 
         else:
