@@ -6,11 +6,7 @@ csv_file_path = 'website/testData/Survey Questions - Techono Event.csv'
 
 pdtable = pd.read_csv(csv_file_path)
 
-def csvPrep(csv_file, column_num):
-    # No Error Checking.
-    pdtable = pd.read_csv(csv_file)
-    pd_data = pdtable.iloc[:,column_num]
-    return pd_data
+
 
 def pandasToSummarize(pd_series):
     #uses HuggingFace Transformers pipeline Library, No Error Checking.
@@ -42,31 +38,27 @@ def testSentiment(pd_series):
         print(item)
 
 # print(pandasToSentiment(csvPrep(csv_file_path,2)))
-summyval = pandasToSummarize(csvPrep(csv_file_path,2))
-print(summyval)
-print(type(summyval))
 
-# sentiment = pd.DataFrame(columns=['Sentence','Label','Score'])
+def csvPrep(csv_file, column_num):
+    # No Error Checking.
+    pdtable = pd.read_csv(csv_file)
+    pd_data = pdtable.iloc[:,column_num]
+    return pd_data
 
-# listonum = [1,2,3,4]
-# sentiment['Sentence'] = pd.Series(listonum)
+def csvPrepV2(csv_file):
+    # No Error Checking.
+    pdtable = pd.read_csv(csv_file)
+    # pdtable.rename(columns={})
+    pd_data = pdtable.iloc[:, 1:]
+    return pd_data
 
-# print(sentiment['Sentence'])
+def columnSelector(Dataframe: pd.DataFrame, columnNumber):
+    return Dataframe.iloc[:, columnNumber]
 
-# print(pdtable)
+multipleColmn = csvPrepV2(csv_file_path)
+singleColumn = columnSelector(multipleColmn,1)
 
-
-# dictvalue = {'Sentence': 'Hello World', 'Label': 'negative', 'Score': 0.3212}
-
-# print(dictvalue['Sentence'])
-
-# listvalue = ['Hello World', 'negative', 0.3212]
-
-
-# sentiment = sentiment.append(listvalue)
-
-
-# result = summarizer(CSVToStr(csv_file_path))
-# print(type(result))
-# print(result[0]['summary_text'])
-# print(CSVToStr(csv_file_path))
+# print(multipleColmn)
+# print(type(multipleColmn))
+print(singleColumn)
+print(type(singleColumn))

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, make_response
-from website.pyScripts.CoreFunctions import csvPrep, pandasToSummarize, pandasToSentiment, generatePDF
+from website.pyScripts.CoreFunctions import csvPrep, pandasToSummarize, SentimentTwitterBase, SentimentGPT2, generatePDF, columnSelector
 from pathlib import Path
 import pdfkit
 
@@ -24,14 +24,17 @@ def create_app():
     def results():
         if request.method == 'POST':
             files = request.files.getlist('file')
-            MainDict = dict.fromkeys(['Sentiment', 'Summary'])
+            MainDict = dict.fromkeys(['Sentiment-TwitterModel','Sentiment-GPT2','Summary'])
             for file in files:
                 if 'file' not in request.files or file.filename == '':
                     continue
                 if allowed_file(file.filename) == True:
-                    currentFile = csvPrep(file,2)
-                    MainDict['Sentiment'] = pandasToSentiment(currentFile)
-                    MainDict['Summary'] = pandasToSummarize(currentFile)
+                    CurrentData = csvPrep(file)
+                    Sentiment = columnSelector(CurrentData, 0)
+                    Summary = columnSelector(CurrentData, 1)
+                    MainDict['Sentiment-TwitterModel'] = SentimentTwitterBase(Sentiment)
+                    MainDict['Sentiment-GPT2'] = SentimentGPT2(Sentiment)
+                    MainDict['Summary'] = pandasToSummarize(Summary)
                     # print(summaryval)
                     # print(f"{sentiment} \n {summaryval}")
                     # print(type(summaryval))
