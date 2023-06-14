@@ -45,8 +45,18 @@ def create_app():
     @app.route("/test")
     def testroute():
         config = pdfkit.configuration(wkhtmltopdf = f'wkhtmltox/bin/wkhtmltopdf.exe')
+        options = {
+            "enable-local-file-access": True,
+            'page-size': 'Letter',
+            'margin-top': '0.75in',
+            'margin-right': '0.75in',
+            'margin-bottom': '0.75in',
+            'margin-left': '0.75in',
+            'encoding': "UTF-8",
+            'no-outline': None
+                    }
         rendered = render_template('test.html', value1='Hello', value2='Word')
-        pdf = pdfkit.from_string(rendered, False, configuration=config)
+        pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
         
         
 
