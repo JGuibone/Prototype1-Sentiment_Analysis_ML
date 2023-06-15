@@ -1,13 +1,22 @@
-{% extends "index.html" %} {% block title%}Result{% endblock %}
+{% extends "indexResult.html" %} {% block title%}Result{% endblock %}
 
 {% block content %}
 
 {% if data %}
 <h1>Data is present [TESTING]</h1>
 <p>{{data['Summary']}}</p><br>
-
-<img src="website/PieChartImgs/SentimentTwitter.png" alt="" srcset="">
-<img src="website/PieChartImgs/SentimentGPT2.png" alt="" srcset="">
+<table>
+    <tbody>
+        <tr>
+            <td>
+                <img src="{{ data['img1'] }}" alt="" srcset="">
+            </td>
+            <td>
+                <img src="{{ data['img2'] }}" alt="" srcset="">
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 {% for table in SentimentTwitterTable %}
             {{SentimentTwitterTitle[loop.index]}}

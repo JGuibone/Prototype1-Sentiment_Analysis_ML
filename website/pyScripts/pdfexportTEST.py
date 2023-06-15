@@ -21,6 +21,6 @@ def generatePDF(Data: dict):
     return response
 
 
-def PDFTEST():
+def PDFTEST(pathofimage : str):
     
     return 1

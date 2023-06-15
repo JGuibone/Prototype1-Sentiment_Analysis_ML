@@ -1,8 +1,11 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('agg')
+from matplotlib import pyplot as plt
 import pdfkit
 from transformers import pipeline
 from flask import render_template, make_response
+from os.path import dirname, join
 
 
 def csvPrep(csv_file):
@@ -82,7 +85,20 @@ def DataToPie(Data :pd.Series):
         return {'Positive': Positive, 'Negative': Negative}
 
 def generatePDF(Data: dict):
+    css = "website/css/result.css"
+    # imageLoc = 
+    # pltPie = {}
     config = pdfkit.configuration(wkhtmltopdf = f'wkhtmltox/bin/wkhtmltopdf.exe')
+    options = {
+            "enable-local-file-access": True,
+            'page-size': 'A4',
+            'margin-top': '0.75in',
+            'margin-right': '0.75in',
+            'margin-bottom': '0.75in',
+            'margin-left': '0.75in',
+            'encoding': "UTF-8",
+            'no-outline': None
+            }
     rendered = render_template('results.html', 
                                data=Data, 
                                SentimentTwitterTable=[Data['Sentiment-TwitterModel'].to_html(classes='data')], 
@@ -91,12 +107,10 @@ def generatePDF(Data: dict):
                                SentimentGPT2Title=Data['Sentiment-GPT2'].columns.values
                                
                                )
-    pdf = pdfkit.from_string(rendered, False, configuration=config)
-    
+    pdf = pdfkit.from_string(rendered, False, configuration=config, options=options,css=css)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = 'inline;filename=output.pdf'
-
     return response
 
 def DataToPie(Data :pd.Series):
@@ -124,23 +138,26 @@ def DataToPie(Data :pd.Series):
         return {'Positive': Positive, 'Negative': Negative}
 
 def GeneratePie(Data :dict):
+    rootdir = dirname(dirname(dirname(__file__)))
+    twitterModel = 'website/PieChartImgs/SentimentTwitter.png'
+    GPT2Model = 'website/PieChartImgs/SentimentGPT2.png'
+    pltpie = plt
     numElem = len(Data)
+    x = list(Data.values())
+    labels = list(Data.keys())
     if numElem == 3:
-        x = list(Data.values())
-        labels = list(Data.keys())
-        fig, ax = plt.subplots(figsize=(6, 6))
-        ax.pie(x, labels=labels, autopct='%.1f%%')
-        ax.set_title('Sentiment Base on Feedback \n Using Twitter roberta base')
-        plt.tight_layout()
-        plt.savefig('website/PieChartImgs/SentimentTwitter.png')
+        pltpie.pie(x, labels=labels, autopct='%.1f%%', wedgeprops={'edgecolor': 'black'})
+        pltpie.title('Sentiment Base on Feedback \n Using Twitter roberta base')
+        pltpie.savefig(twitterModel)
+        pltpie.close()
+        return join(rootdir,twitterModel)
     else:
-        x = list(Data.values())
-        labels = list(Data.keys())
-        fig, ax = plt.subplots(figsize=(6, 6))
-        ax.pie(x, labels=labels, autopct='%.1f%%')
-        ax.set_title('Sentiment Base on Feedback \n Using GPT-2 Model')
-        plt.tight_layout()
-        plt.savefig('website/PieChartImgs/SentimentGPT2.png')
+        pltpie.pie(x, labels=labels, autopct='%.1f%%', wedgeprops={'edgecolor': 'black'})
+        pltpie.title('Sentiment Base on Feedback \n Using GPT-2 Model')
+        pltpie.savefig(GPT2Model)
+        pltpie.close()
+        return join(rootdir,GPT2Model)
+    
 
 
 #================================= TESTING Remove any un-commented code below this line when done ========================================

@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, make_response
 from website.pyScripts.CoreFunctions import *
 from pathlib import Path
+from os.path import dirname, join
 import pdfkit
+
 
 
 def create_app():
@@ -24,7 +26,7 @@ def create_app():
     def results():
         if request.method == 'POST':
             files = request.files.getlist('file')
-            MainDict = dict.fromkeys(['Sentiment-TwitterModel','Sentiment-GPT2','Summary'])
+            MainDict = dict.fromkeys(['Sentiment-TwitterModel','Sentiment-GPT2','Summary', 'img1', 'img2'])
             for file in files:
                 if 'file' not in request.files or file.filename == '':
                     continue
@@ -35,15 +37,20 @@ def create_app():
                     MainDict['Sentiment-TwitterModel'] = SentimentTwitterBase(Sentiment)
                     MainDict['Sentiment-GPT2'] = SentimentGPT2(Sentiment)
                     MainDict['Summary'] = pandasToSummarize(Summary)
-                    GeneratePie(DataToPie(MainDict['Sentiment-TwitterModel']['Label']))
-                    GeneratePie(DataToPie(MainDict['Sentiment-GPT2']['Label']))
+                    MainDict['img1'] = GeneratePie(DataToPie(MainDict['Sentiment-TwitterModel']['Label']))
+                    MainDict['img2'] = GeneratePie(DataToPie(MainDict['Sentiment-GPT2']['Label']))
+
             return generatePDF(MainDict)
+            # return "Generated"
 
         else:
             return 404
 
     @app.route("/test")
     def testroute():
+        rootdir = dirname(dirname(__file__))
+        css = "website/css/result.css"
+        Data = {'img1': f"{Path(rootdir, 'website/PieChartImgs/SentimentGPT2.png')}", 'img2': r"C:\Users\johan\Documents\GitHub\School Work\Practicum\Prototype1-Sentiment_Analysis_ML\website\PieChartImgs\SentimentTwitter.png", 'validation': 'Data is pressent'}
         config = pdfkit.configuration(wkhtmltopdf = f'wkhtmltox/bin/wkhtmltopdf.exe')
         options = {
             "enable-local-file-access": True,
@@ -55,22 +62,18 @@ def create_app():
             'encoding': "UTF-8",
             'no-outline': None
                     }
-        rendered = render_template('test.html', value1='Hello', value2='Word')
-        pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
+        rendered = render_template('test.html', value1='Hello', value2='Word', data=Data)
+        pdf = pdfkit.from_string(rendered, False, configuration=config, options=options, css=css)
         
         
 
         response = make_response(pdf)
         response.headers['Content-Type'] = 'application/pdf'
         response.headers['Content-Disposition'] = 'inline;filename=output.pdf'
-
+        # print(response)
         return response
         # pdfkit.from_url('http://google.com', 'out.pdf')
         # return 1
 
-    @app.route("/test2", methods=['GET'])
-    def testroute2():
-
-        return 'Hello World'
 
     return app

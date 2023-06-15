@@ -1,6 +1,10 @@
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('agg')
+from matplotlib import pyplot as plt
 from transformers import pipeline
 import pandas as pd
+from pathlib import Path
+from os.path import dirname, join
 
 
 
@@ -97,22 +101,53 @@ def GeneratePie(Data :dict):
         plt.savefig('website/PieChartImgs/SentimentGPT2.png')
         return True
 
-data = columnSelector(csvPrep(csv_file_path),0)
-TwitterModel = SentimentTwitterBase(data)['Label']
-GPT2Model = SentimentGPT2(data)['Label']
-GeneratePie(DataToPie(TwitterModel))
-GeneratePie(DataToPie(GPT2Model))
-# print(GeneratePie(DataToPie(Labels)))
+def GeneratePie2(Data :dict):
+    pltpie = plt
+    numElem = len(Data)
+    x = list(Data.values())
+    labels = list(Data.keys())
+    if numElem == 3:
+        pltpie.pie(x, labels=labels, autopct='%.1f%%', wedgeprops={'edgecolor': 'black'})
+        pltpie.title('Sentiment Base on Feedback \n Using Twitter roberta base')
+        pltpie.savefig('website/PieChartImgs/SentimentTwitter.png')
+        pltpie.close()
+    else:
+        pltpie.pie(x, labels=labels, autopct='%.1f%%', wedgeprops={'edgecolor': 'black'})
+        pltpie.title('Sentiment Base on Feedback \n Using GPT-2 Model')
+        pltpie.savefig('website/PieChartImgs/SentimentGPT2.png')
+        pltpie.close()
 
-# x = list(piea.values())
-# labels = list(piedata.keys())
-
-# fig, ax = plt.subplots(figsize=(6, 6))
-# ax.pie(x, labels=labels, autopct='%.1f%%')
-# ax.set_title('Sentiment Base on Feedback')
-# plt.tight_layout()
-# plt.show()
 
 
+
+# data = columnSelector(csvPrep(csv_file_path),0)
+# TwitterModel = SentimentTwitterBase(data)['Label']
+# GPT2Model = SentimentGPT2(data)['Label']
+# GeneratePie(DataToPie(TwitterModel))
+# GeneratePie(DataToPie(GPT2Model))
+
+# MainDict = dict.fromkeys(['Sentiment-TwitterModel','Sentiment-GPT2','Summary'])
+# CurrentData = csvPrep(csv_file_path)
+# Sentiment = columnSelector(CurrentData, 0)
+# MainDict['Sentiment-TwitterModel'] = SentimentTwitterBase(Sentiment)
+# MainDict['Sentiment-GPT2'] = SentimentGPT2(Sentiment)
+
+# print(MainDict['Sentiment-TwitterModel']['Label'])
+# print("*****************")
+# print(MainDict['Sentiment-GPT2']['Label'])
+# print(DataToPie(MainDict['Sentiment-TwitterModel']['Label']))
+# print("*****************")
+# print(DataToPie(MainDict['Sentiment-GPT2']['Label']))
+# GeneratePie2(DataToPie(MainDict['Sentiment-TwitterModel']['Label']))
+# GeneratePie2(DataToPie(MainDict['Sentiment-GPT2']['Label']))
+
+
+# UPLOAD = "website/PieChartImgs"
+# projectroot = dirname(__file__)
+# fileLoc = join(projectroot, 'SentimentGPT2.png')
+
+# print(fileLoc)
+
+# print(Path(UPLOAD,"SentimentGPT2.png"))
 
 #https://www.pythoncharts.com/matplotlib/pie-chart-matplotlib/

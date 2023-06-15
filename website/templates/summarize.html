@@ -1,10 +1,23 @@
-{% extends "index.html" %} {% block title%}Result{% endblock %}
+{% extends "indexResult.html" %} {% block title%}Result{% endblock %}
 
 {% block content %}
 
-Hello this is the summarize html content page <br>
+{% if data %}
+<h1>Data is present [TESTING]</h1>
+<p>{{data['Summary']}}</p><br>
+<table>
+    <tbody>
+        <tr>
+            <td>
+                <img src="{{ data['img1'] }}" alt="" srcset="">
+            </td>
+            <td>
+                <img src="{{ data['img2'] }}" alt="" srcset="">
+            </td>
+        </tr>
+    </tbody>
+</table>
 
-<h1> this is just a testing. </h1>
-<!-- <form> -->
-<!-- </form> -->
+{% endif%}
+
 {% endblock %}
