@@ -1,0 +1,36 @@
+
+table {
+  display: flex;
+  justify-content: center;
+  width: auto;
+  height: 100%;
+  border-collapse: collapse;
+}
+
+tbody tr td {
+  margin: 0px;
+  padding: 0px;
+  display: table-cell;
+
+}
+
+
+.titleDoc {
+  font-size: 40px;
+  text-align: center;
+}
+
+.sentimentDoc{
+  font-size: 30px;
+  /* color: red; */
+  text-align: justify;
+  /* padding-left: 3in;
+  padding-right: 3in; */
+  padding-inline-start: 2in;
+  padding-inline-end: 2in;
+}
+
+section {
+  text-align: justify;
+  text-justify: inter-word;
+}

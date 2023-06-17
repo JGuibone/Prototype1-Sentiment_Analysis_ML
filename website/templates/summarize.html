@@ -1,10 +1,63 @@
-{% extends "index.html" %} {% block title%}Result{% endblock %}
+{% extends "indexResult.html" %} {% block title%}Summarize{% endblock %}
 
 {% block content %}
 
-Hello this is the summarize html content page <br>
 
-<h1> this is just a testing. </h1>
-<!-- <form> -->
-<!-- </form> -->
+<center>
+    <div class="aclcLogo" style="padding: 20px;">
+        <img src="C:\Users\johan\Documents\GitHub\School Work\Practicum\Prototype1-Sentiment_Analysis_ML\website\img\ACLC-Logo.png" alt="" srcset="">
+        <p>999 J.C. Aquino Avenue, Butuan City, <br> Pan-Philippine Hwy, 08600 Agusan Del Norte</p>
+    </div>
+</center>
+<section style="padding: 20px; margin: 10px;">
+    {% if data %}
+    <h1>Data is present [TESTING]</h1>
+
+    <h4 class="titleDoc">
+        NLP Analysis of Document 
+    </h4>
+
+</section>
+    
+
+<table>
+    <tbody>
+        <tr>
+            <div class="sentimentDoc">
+                    {{data['Summary']}}
+            </div>
+        </tr>
+        <br>
+        <br>
+        <br>
+        <br>
+        <tr>
+            <td>
+                <img class="pieChart" src="{{ data['img1'] }}" alt="" srcset="">
+            </td>
+            <td>
+                <img class="pieChart" src="{{ data['img2'] }}" alt="" srcset="">
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!-- <img class="pieChart" src="{{ data['img2'] }}" alt="" srcset=""> -->
+<div style="page-break-after: always;"></div>
+<div style="font-size: 28px;">
+    {% for table in SentimentTwitterTable %}
+            {{SentimentTwitterTitle[loop.index]}}
+            {{ table|safe }}
+    {% endfor %}
+</div>
+
+<div style="font-size: 28px;">
+    {% for table in SentimentGPT2Table %}
+            {{SentimentGPT2Title[loop.index]}}
+            {{ table|safe }}
+{% endfor %}
+</div>
+{% endif%}
+
+
+
 {% endblock %}

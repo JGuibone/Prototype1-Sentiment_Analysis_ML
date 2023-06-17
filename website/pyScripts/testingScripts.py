@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from scipy.special import softmax
 from pathlib import Path
+import csv as csv
 # from transformers import logging as hf_logging
 
 MODEL = f"Model/twitter-roberta-base-sentiment-2022"
@@ -44,10 +45,10 @@ def document2Array(csv_file):
 
 csv_file_path = 'website/testData/testData.csv'
 
-pdtable = pd.read_csv(csv_file_path)
-numpyarray = pdtable.to_numpy()
-numpyarray = numpyarray[:,1:]
-# print(numpyarray[:,1:])
+# pdtable = pd.read_csv(csv_file_path)
+# numpyarray = pdtable.to_numpy()
+# numpyarray = numpyarray[:,1:]
+# # print(numpyarray[:,1:])
 
 def combineArray(numpyArray):
 
@@ -60,8 +61,35 @@ def sentimentV2(numpyArray):
     nparr = np.array(pylist)
     return nparr
 
+# print(pdtable.columns)
+# pdtable.columns = ['column1','column2','column3']
+# print(pdtable.columns)
+
+def CSVToStr(csv_file):
+    #Function is used for injesting form POST from user.
+    pdtable = pd.read_csv(csv_file)
+    pddata = pdtable.iloc[:,1]
+    convo = '\n'.join(list(pddata))
+    print(convo)
+
+
+
+def document2Array(csv_file):
+    #remove header parementer if you dont want to include the header of the csv document in converting to numpy array
+    pdtable = pd.read_csv(csv_file)
+    nptable = pdtable.to_numpy()[:,1]
+    return nptable
+
+# testingfunction()
+
+CSVToStr(csv_file_path)
+
+# print(len('birds'))
+
+# print(pdtable.shape)
+# print(pdtable.iloc[:[0]])
 # print(numpyarray[1])
-print(sentimentV2(numpyarray))
+# print(sentimentV2(numpyarray))
 
 
 # stringSentement('we need aircon to hot and wifi')
@@ -70,3 +98,36 @@ print(sentimentV2(numpyarray))
 # nparray = np.array([1,3,2])
 # ranking = (-nparray).argsort()
 # print(ranking)
+
+
+#+++++++++++++++++++++++++++++
+
+
+MODEL = f"Model/twitter-roberta-base-sentiment-2022"
+tokenizer = AutoTokenizer.from_pretrained(MODEL)
+config = AutoConfig.from_pretrained(MODEL)
+model = AutoModelForSequenceClassification.from_pretrained(MODEL)
+
+def stringSentement(text):
+    encoded_input = tokenizer(text, return_tensors='pt')
+    output = model(**encoded_input)
+    scores = softmax(output[0][0].detach().numpy())
+    ranking = scores.argsort()[::-1]
+    l = config.id2label[ranking[0]]
+    s = scores[ranking[0]]
+    result = f"{l} {np.round(float(s), 4)}"
+    return result
+
+def document2Array(csv_file):
+    #remove header parementer if you dont want to include the header of the csv document in converting to numpy array
+    pdtable = pd.read_csv(csv_file)
+    nptable = pdtable.to_numpy()[:,1:]
+    return nptable
+
+def sentimentV2(numpyArray):
+    pylist = numpyArray.tolist()
+    for x in range(numpyArray.shape[0]):
+        result = stringSentement(numpyArray[x][0])
+        pylist[x].append(result)
+    nparr = np.array(pylist)
+    return nparr
