@@ -1,42 +1,36 @@
-#test{
-  color: red;
-}
-
-.test{
-  color: blue;
-}
-
-.row {
-    display: flex;
-  }
-  
-.column {
-  color: yellow;
-  flex: 33.33%;
-  padding: 5px;
-  width: 100%;
-}
-
-.testingdiv{
-  display: inline-block;
-  margin-top: 1em;
-  margin-bottom: 1em;
-  margin-left: 40px;
-  margin-right: 40px;
-}
 
 table {
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  width: auto;
   height: 100%;
   border-collapse: collapse;
 }
 
-table tr td {
-  padding: 0;
-  /* text-align: center; */
-  align-items: center;
+tbody tr td {
+  margin: 0px;
+  padding: 0px;
+  display: table-cell;
+
 }
 
-table tr td:last-child {
+
+.titleDoc {
+  font-size: 40px;
   text-align: center;
+}
+
+.sentimentDoc{
+  font-size: 30px;
+  /* color: red; */
+  text-align: justify;
+  /* padding-left: 3in;
+  padding-right: 3in; */
+  padding-inline-start: 2in;
+  padding-inline-end: 2in;
+}
+
+section {
+  text-align: justify;
+  text-justify: inter-word;
 }

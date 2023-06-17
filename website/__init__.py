@@ -39,6 +39,7 @@ def create_app():
                     MainDict['Summary'] = pandasToSummarize(Summary)
                     MainDict['img1'] = GeneratePie(DataToPie(MainDict['Sentiment-TwitterModel']['Label']))
                     MainDict['img2'] = GeneratePie(DataToPie(MainDict['Sentiment-GPT2']['Label']))
+            # return MainDict['img2']
 
             return generatePDF(MainDict)
             # return "Generated"

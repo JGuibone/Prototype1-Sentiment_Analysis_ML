@@ -6,6 +6,7 @@ import pdfkit
 from transformers import pipeline
 from flask import render_template, make_response
 from os.path import dirname, join
+from pathlib import Path
 
 
 def csvPrep(csv_file):
@@ -99,15 +100,14 @@ def generatePDF(Data: dict):
             'encoding': "UTF-8",
             'no-outline': None
             }
-    rendered = render_template('results.html', 
+    summarize = render_template('summarize.html', 
                                data=Data, 
                                SentimentTwitterTable=[Data['Sentiment-TwitterModel'].to_html(classes='data')], 
                                SentimentTwitterTitle=Data['Sentiment-TwitterModel'].columns.values,
                                SentimentGPT2Table=[Data['Sentiment-GPT2'].to_html(classes='data')], 
                                SentimentGPT2Title=Data['Sentiment-GPT2'].columns.values
-                               
                                )
-    pdf = pdfkit.from_string(rendered, False, configuration=config, options=options,css=css)
+    pdf = pdfkit.from_string(summarize, False, configuration=config, options=options,css=css)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = 'inline;filename=output.pdf'
@@ -139,8 +139,8 @@ def DataToPie(Data :pd.Series):
 
 def GeneratePie(Data :dict):
     rootdir = dirname(dirname(dirname(__file__)))
-    twitterModel = 'website/PieChartImgs/SentimentTwitter.png'
-    GPT2Model = 'website/PieChartImgs/SentimentGPT2.png'
+    twitterModel = Path('website/PieChartImgs/SentimentTwitter.png')
+    GPT2Model = Path('website/PieChartImgs/SentimentGPT2.png')
     pltpie = plt
     numElem = len(Data)
     x = list(Data.values())
