@@ -2,45 +2,9 @@
 
 {% block content %}
 
-<h1>TEST</h1>
-<p>Tesing CSS this is the default</p>
-<p id="test">this is the one with red text using ID</p>
-<p class="test"> this is the one using Class</p>
+<form action="/results" method="post">
+    {{ form.name.label }} {{ form.name(size=20) }}
+    <input type="submit" value="Go">
+</form>
 
-<table>
-    <tbody>
-        <tr>
-            <td>
-                <img src="C:\Users\johan\Documents\GitHub\School Work\Practicum\Prototype1-Sentiment_Analysis_ML\website\PieChartImgs\SentimentTwitter.png" alt="" srcset="">
-            </td>
-            <td>
-                <img src="C:\Users\johan\Documents\GitHub\School Work\Practicum\Prototype1-Sentiment_Analysis_ML\website\PieChartImgs\SentimentGPT2.png" alt="" srcset="">
-            </td>
-        </tr>
-    </tbody>
-</table>
-
-
-
-
-<br>
-<br>
-<h3>Hello this is the {{value1}}</h3>
-<p>and this is the {{value2}}</p>
-<!-- <div class="row" >
-    <div class="column">
-        <img src="C:\Users\johan\Documents\GitHub\School Work\Practicum\Prototype1-Sentiment_Analysis_ML\website\PieChartImgs\SentimentTwitter.png" style="width: 50%;" alt="" srcset="">
-    </div>
-    <div class="column" >
-        <img src="C:\Users\johan\Documents\GitHub\School Work\Practicum\Prototype1-Sentiment_Analysis_ML\website\PieChartImgs\SentimentGPT2.png" style="width: 50%;" alt="" srcset="">test
-    </div>
-</div> -->
-
-{% if data %}
-
-<h3>Loading Data</h3>
-<p>{{ data['validation'] }}</p>
-<p>{{ data['img1'] }}</p>
-
-{% endif%}
 {% endblock %}
