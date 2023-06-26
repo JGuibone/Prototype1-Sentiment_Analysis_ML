@@ -8,6 +8,11 @@ from flask import render_template, make_response
 from os.path import dirname, join
 from pathlib import Path
 
+bartLocalPath = "" #"Model/bart-large-cnn-samsum"
+twitterLocalPath = "" #f"Model/twitter-roberta-base-sentiment-2022"
+gpt2LocalPath = "" #f"Model/gpt2-medium-finetuned-sst2-sentiment"
+
+
 
 def csvPrep(csv_file):
     # No Error Checking.
@@ -22,15 +27,21 @@ def columnSelector(Dataframe: pd.DataFrame, columnNumber):
 
 def pandasToSummarize(pd_series):
     #uses HuggingFace Transformers pipeline Library, No Error Checking.
-    summarizer = pipeline("summarization", model="Model/bart-large-cnn-samsum")
+    huggingFace = "philschmid/bart-large-cnn-samsum"
+    if bartLocalPath != "":
+        huggingFace = bartLocalPath
+    summarizer = pipeline("summarization", model=huggingFace)
     convo = '\n'.join(list(pd_series))
     result = summarizer(convo)[0]['summary_text']
     return result
 
 def SentimentTwitterBase(pd_series):
     #returns a pandas dataframe from processing the sentiment
+    huggingFace = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
+    if twitterLocalPath != "":
+        huggingFace = twitterLocalPath
     sentiment = pd.DataFrame(columns=['Sentence','Label','Score'])
-    sentiment_task = pipeline("sentiment-analysis", model=f"Model/twitter-roberta-base-sentiment-2022", tokenizer=f"Model/twitter-roberta-base-sentiment-2022")
+    sentiment_task = pipeline("sentiment-analysis", model=huggingFace, tokenizer=huggingFace)
     Sentence = []
     Label = []
     Score = []
@@ -46,8 +57,11 @@ def SentimentTwitterBase(pd_series):
 
 def SentimentGPT2(pd_series):
     #returns a pandas dataframe from processing the sentiment
+    huggingFace = f"michelecafagna26/gpt2-medium-finetuned-sst2-sentiment"
+    if twitterLocalPath != "":
+        huggingFace = twitterLocalPath
     sentiment = pd.DataFrame(columns=['Sentence','Label','Score'])
-    sentiment_task = pipeline("text-classification", model=f"Model/gpt2-medium-finetuned-sst2-sentiment", tokenizer=f"Model/gpt2-medium-finetuned-sst2-sentiment")
+    sentiment_task = pipeline("text-classification", model=huggingFace, tokenizer=huggingFace)
     Sentence = []
     Label = []
     Score = []
