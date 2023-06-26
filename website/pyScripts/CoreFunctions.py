@@ -8,9 +8,9 @@ from flask import render_template, make_response
 from os.path import dirname, join
 from pathlib import Path
 
-bartLocalPath = "" #"Model/bart-large-cnn-samsum"
-twitterLocalPath = "" #f"Model/twitter-roberta-base-sentiment-2022"
-gpt2LocalPath = "" #f"Model/gpt2-medium-finetuned-sst2-sentiment"
+bartLocalPath = "Model/bart-large-cnn-samsum"
+twitterLocalPath = f"Model/twitter-roberta-base-sentiment-2022"
+gpt2LocalPath = f"Model/gpt2-medium-finetuned-sst2-sentiment"
 
 
 
