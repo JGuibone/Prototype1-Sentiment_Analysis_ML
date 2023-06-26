@@ -1,9 +1,10 @@
-from os.path import dirname, join, abspath
-from pathlib import Path
+someModel = f"""path is now not empty"""
 
-rootdir = dirname(dirname(dirname(__file__)))
 
-# test = abspath()
+def testingFunc():
+    hugginface = "somepathofmodel"
+    if someModel != "":
+        hugginface = someModel
+    print(hugginface)
 
-print(rootdir)
-# print(test)
+testingFunc()
