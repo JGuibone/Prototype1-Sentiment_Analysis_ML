@@ -44,14 +44,14 @@
 <!-- <img class="pieChart" src="{{ data['img2'] }}" alt="" srcset=""> -->
 <div style="page-break-after: always;"></div>
 <center><h1>Sentiment Table</h1></center>
-<div style="font-size: 28px;">
+<div style="font-size: 24px;">
     {% for table in SentimentTwitterTable %}
             {{SentimentTwitterTitle[loop.index]}}
             {{ table|safe }}
     {% endfor %}
 </div>
 
-<div style="font-size: 28px;">
+<div style="font-size: 24px;">
     {% for table in SentimentGPT2Table %}
             {{SentimentGPT2Title[loop.index]}}
             {{ table|safe }}
