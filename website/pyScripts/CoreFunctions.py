@@ -8,9 +8,9 @@ from flask import render_template, make_response
 from os.path import dirname, join
 from pathlib import Path
 
-bartLocalPath = "" #"Model/bart-large-cnn-samsum"
-twitterLocalPath = "" #f"Model/twitter-roberta-base-sentiment-2022"
-gpt2LocalPath = "" #f"Model/gpt2-medium-finetuned-sst2-sentiment"
+bartLocalPath = "Model/bart-large-cnn-samsum"
+twitterLocalPath = f"Model/twitter-roberta-base-sentiment-2022"
+gpt2LocalPath = f"Model/gpt2-medium-finetuned-sst2-sentiment"
 
 
 
@@ -58,8 +58,8 @@ def SentimentTwitterBase(pd_series):
 def SentimentGPT2(pd_series):
     #returns a pandas dataframe from processing the sentiment
     huggingFace = f"michelecafagna26/gpt2-medium-finetuned-sst2-sentiment"
-    if twitterLocalPath != "":
-        huggingFace = twitterLocalPath
+    if gpt2LocalPath != "":
+        huggingFace = gpt2LocalPath
     sentiment = pd.DataFrame(columns=['Sentence','Label','Score'])
     sentiment_task = pipeline("text-classification", model=huggingFace, tokenizer=huggingFace)
     Sentence = []
