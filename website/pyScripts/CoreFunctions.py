@@ -127,30 +127,6 @@ def generatePDF(Data: dict):
     response.headers['Content-Disposition'] = 'inline;filename=output.pdf'
     return response
 
-def DataToPie(Data :pd.Series):
-    numColumn = Data.nunique()
-    if numColumn == 3:
-        Positive = 0
-        Neutral = 0
-        Negative = 0
-        for item in Data:
-            if str(item).lower() == 'positive':
-                Positive += 1
-            elif str(item).lower() == 'neutral':
-                Neutral += 1
-            else:
-                Negative += 1
-        return {'Positive': Positive, 'Neutral': Neutral, 'Negative': Negative}
-    else:
-        Positive = 0
-        Negative = 0
-        for item in Data:
-            if str(item).lower() == 'positive':
-                Positive += 1
-            else:
-                Negative += 1
-        return {'Positive': Positive, 'Negative': Negative}
-
 def GeneratePie(Data :dict):
     rootdir = dirname(dirname(dirname(__file__)))
     twitterModel = Path('website/PieChartImgs/SentimentTwitter.png')
