@@ -1,0 +1,22 @@
+{% extends "indexResult.html" %}
+
+{% block content %}
+
+
+{% if data %}
+<h1>Data is present [TESTING]</h1>
+<p>{{data['Summary']}}</p><br>
+
+{% for table in SentimentTwitterTable %}
+            {{SentimentTwitterTitle[loop.index]}}
+            {{ table|safe }}
+{% endfor %}
+<div style="page-break-after: always;"></div>
+{% for table in SentimentGPT2Table %}
+            {{SentimentGPT2Title[loop.index]}}
+            {{ table|safe }}
+{% endfor %}
+
+{% endif%}
+
+{% endblock %}
